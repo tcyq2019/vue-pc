@@ -34,6 +34,8 @@
             type="text"
             id="autocomplete"
             class="input-error input-xxlarge"
+            placeholder="请输入您想要的商品"
+            v-model="SearchText"
           />
           <button
             class="sui-btn btn-xlarge btn-danger"
@@ -51,9 +53,25 @@
 <script>
 export default {
   name: 'hearder',
+  data() {
+    return {
+      SearchText: '',
+    }
+  },
   methods: {
     onSearch() {
-      this.$router.push('/Search')
+      const { SearchText } = this
+      /* const params = SearchText ? `/${SearchText}` : ''
+      const location = '/Search' + params
+
+      this.$router.push(location) */
+      const location = { name: 'search' }
+      if (SearchText) {
+        location.params = {
+          SearchText,
+        }
+      }
+      this.$route.push(location)
     },
   },
 }
