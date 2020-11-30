@@ -80,6 +80,7 @@ export default {
   background-color: #ccc;
   height: 320px;
   padding: 20px;
+  bottom: 0px;
 }
 .footer-content {
   display: flex;

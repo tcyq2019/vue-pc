@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <TypeNav />
     <!--列表-->
     <ListContainer />
@@ -25,7 +26,7 @@ import Like from "./Like/Like";
 import ListContainer from "./ListContainer/ListContainer";
 import Rank from "./Rank/Rank";
 import TodayRecommend from "./TodayRecommend/TodayRecommend";
-import TypeNav from "./TypeNav";
+import TypeNav from "../../compponents/TypeNav";
 
 export default {
   name: "Home",

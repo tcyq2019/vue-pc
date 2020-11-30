@@ -8,12 +8,13 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    NProgress.start();
     return config
   }
 );
-
 instance.interceptors.response.use(
   (response) => {
+    NProgress.done();
     if (response.data.code === 200) {
       return response.data.data;
     }
@@ -22,9 +23,11 @@ instance.interceptors.response.use(
     return Promise.reject(message)
   },
   (error) => {
+    NProgress.done();
     const message = error.message || "网络错误"
     Message.error(message)
-    return Promise.reject(message)
+    return Promise.reject(message);
   }
-)
+);
+
 export default instance
