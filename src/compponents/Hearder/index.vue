@@ -71,10 +71,16 @@ export default {
           SearchText,
         }
       }
-      this.$route.push(location)
+      const { categoryName } = this.$route.query;
+      if (categoryName) {
+        location.query = this.$route.query;
+      }
+      this.$router.push(
+        location
+      );
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
