@@ -3,28 +3,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container" id="mySwiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="./images/banner1.jpg" />
-            </div>
-            <!-- <div class="swiper-slide">
-              <img src="./images/banner2.jpg" />
-            </div>
-            <div class="swiper-slide">
-              <img src="./images/banner3.jpg" />
-            </div>
-            <div class="swiper-slide">
-              <img src="./images/banner4.jpg" />
-            </div> -->
-          </div>
-          <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
-
-          <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+        <Carousel :carpuseList="banners" />
       </div>
       <div class="right">
         <div class="news">
@@ -101,20 +80,23 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import Carousel from '../../../compponents/Carousel'
 export default {
   name: 'ListContainer',
-  computed:{
+  computed: {
     ...mapState({
-      banners:(state)=>state.home.banners
-    })
+      banners: (state) => state.home.banners,
+    }),
   },
-  methods:{
-    ...mapActions(['getbanners'])
+  methods: {
+    ...mapActions(['getBanners']),
   },
-  mounted(){
-    this.getbanners()
-  }
-  
+  async mounted() {
+    await this.getBanners()
+  },
+  components: {
+    Carousel,
+  },
 }
 </script>
 

@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <TypeNav />
     <!--列表-->
     <ListContainer />
@@ -11,25 +10,37 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor />
+    <Floor v-for="(floor,index) in floors" :key="index" :floor="floor" />
     <!--楼层-->
-    <Floor />
+    <!-- <Floor /> -->
     <!--商标-->
     <Brand />
   </div>
 </template>
 
 <script>
-import Brand from "./Brand/Brand";
-import Floor from "./Floor/Floor";
-import Like from "./Like/Like";
-import ListContainer from "./ListContainer/ListContainer";
-import Rank from "./Rank/Rank";
-import TodayRecommend from "./TodayRecommend/TodayRecommend";
-import TypeNav from "../../compponents/TypeNav";
+import { mapState, mapActions } from 'vuex'
+import Brand from './Brand/Brand'
+import Floor from './Floor/Floor'
+import Like from './Like/Like'
+import ListContainer from './ListContainer/ListContainer'
+import Rank from './Rank/Rank'
+import TodayRecommend from './TodayRecommend/TodayRecommend'
+import TypeNav from '../../compponents/TypeNav'
 
 export default {
-  name: "Home",
+  name: 'Home',
+  computed: {
+    ...mapState({
+      floors: (state) => state.home.floors,
+    }),
+  },
+  methods: {
+    ...mapActions(['getfloors']),
+  },
+  mounted() {
+    this.getfloors()
+  },
   components: {
     Brand,
     Floor,
@@ -39,7 +50,7 @@ export default {
     TodayRecommend,
     TypeNav,
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

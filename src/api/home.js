@@ -9,10 +9,17 @@ export const reqGetBaseCatgoryList = () => {
 }
 
 //这里获取mock模仿的图片，轮播图数据
-export const reqGetbanners = () => {
+
+export const reqGetBanners = () => {
   return mockRequest({
     method: "GET",
-    url: "/banners"
+    url: "/banners",
+  });
+};
+export const reqGetfloors = () => {
+  return mockRequest({
+    method: "GET",
+    url: "/floors"
   })
 }
 
