@@ -61,26 +61,38 @@ export default {
   methods: {
     onSearch() {
       const { SearchText } = this
-      /* const params = SearchText ? `/${SearchText}` : ''
-      const location = '/Search' + params
-
-      this.$router.push(location) */
-      const location = { name: 'search' }
+      const location = {
+        name: 'search', //使用命名路由
+      }
       if (SearchText) {
         location.params = {
           SearchText,
         }
       }
-      const { categoryName } = this.$route.query;
-      if (categoryName) {
-        location.query = this.$route.query;
+
+      if (SearchText) {
+        location.params = {
+          SearchText,
+        }
       }
-      this.$router.push(
-        location
-      );
+      const { categoryName } = this.$route.query
+      if (categoryName) {
+        location.query = this.$route.query
+      }
+
+      if (this.$route.name === 'search') {
+        this.$router.replace(location)
+      } else {
+        this.$router.push(location)
+      }
     },
   },
-};
+  mounted() {
+    this.$bus.$on('clearKeyWord', () => {
+      this.SearchText = ''
+    })
+  },
+}
 </script>
 
 <style lang="less" scoped>

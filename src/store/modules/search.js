@@ -18,6 +18,9 @@ export default {
     },
     trademarkList (state) {
       return state.traversedata.trademarkList
+    },
+    total (state) {
+      return state.traversedata.total
     }
 
   },

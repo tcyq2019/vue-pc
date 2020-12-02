@@ -11,23 +11,52 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-show="options.keyword" @click="delSearchName">
+              关键词：{{ options.keyword }}<i>×</i>
+            </li>
+            <li
+              class="with-x"
+              v-show="options.categoryName"
+              @click="delCategory"
+            >
+              分类名称：{{ options.categoryName }}<i>×</i>
+            </li>
+            <li class="with-x" v-show="options.trademark" @click="delTrademark">
+              品牌：{{ options.trademark.split(':')[1] }}<i>×</i>
+            </li>
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="prop"
+              @click="delProp(index)"
+            >
+              {{ prop.split(':')[2] }}:{{ prop.split(':')[1] }}<i>×</i>
+            </li>
           </ul>
         </div>
 
-        <!--selector-->
-        <SearchSelector />
+        <!--selector选择商品类别-->
+        <SearchSelector :addTrademark="addTrademark" @add-prop="addProp" />
 
-        <!--details-->
+        <!--details 商品列表导航-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  :class="{ active: options.order.indexOf('1') > -1 }"
+                  @click="setOrder('1')"
+                >
+                  <a>
+                    综合
+                    <i
+                      :class="{
+                        iconfont: true,
+                        'icon-zhankai': isDone,
+                        'icon-shouqi': !isDone,
+                      }"
+                    ></i>
+                  </a>
                 </li>
                 <li>
                   <a href="#">销量</a>
@@ -38,11 +67,31 @@
                 <li>
                   <a href="#">评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li
+                  :class="{ active: options.order.indexOf('2') > -1 }"
+                  @click="setOrder('2')"
+                >
+                  <a
+                    >价格
+                    <span>
+                      <i
+                        :class="{
+                          iconfont: true,
+                          'icon-shouqi_mian': true,
+                          deactive:
+                            options.order.indexOf('2') > -1 && isPriceDown,
+                        }"
+                      ></i>
+                      <i
+                        :class="{
+                          iconfont: true,
+                          'icon-zhankai_mian': true,
+                          deactive:
+                            options.order.indexOf('2') > -1 && !isPriceDown,
+                        }"
+                      ></i>
+                    </span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -88,35 +137,17 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrrentChange"
+            :current-page="options.pageNo"
+            :pager-count="9"
+            :page-size="5"
+            background
+            layout="prev, pager, next, jumper,total, sizes"
+            :total="total"
+          >
+          </el-pagination>
         </div>
       </div>
     </div>
@@ -129,14 +160,137 @@ import SearchSelector from './SearchSelector/SearchSelector'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'search',
+  data() {
+    return {
+      options: {
+        category1Id: '',
+        category2Id: '',
+        category3Id: '',
+        categoryName: '',
+        keyword: '',
+        order: '1:desc',
+        pageNo: 1, //分页的页码
+        pageSize: 5, //分页每页的商品数量
+        props: [],
+        trademark: '',
+      },
+      isDone: true, //综合图标排序
+      isPriceDown: false, //价格排序
+    }
+  },
+  watch: {
+    $route() {
+      this.updataProductList()
+    },
+  },
   computed: {
-    ...mapGetters(['goodsList']),
+    ...mapGetters(['goodsList', 'total']),
   },
   methods: {
     ...mapActions(['getTraversedata']),
+    updataProductList(pageNo = 1) {
+      const { SearchText: keyword } = this.$route.params
+      const {
+        category1Id,
+        category2Id,
+        category3Id,
+        categoryName,
+      } = this.$route.query
+
+      const options = {
+        ...this.options,
+        keyword,
+        categoryName,
+        category1Id,
+        category2Id,
+        category3Id,
+        pageNo
+      }
+      this.options = options
+      this.getTraversedata(options)
+    },
+    //删除关键字
+    delSearchName() {
+      //删除options
+      this.options.keyword = ''
+      this.$bus.$emit('clearKeyWord')
+      //清空params参数
+      //$route上面的属性是制度属性不能修改，则使用在此跳转
+      this.$router.replace({
+        name: 'search',
+        query: this.$route.query,
+      })
+    },
+    //删除分类
+    delCategory() {
+      this.options.categoryName = ''
+      this.options.category1Id = ''
+      this.options.category2Id = ''
+      this.options.category3Id = ''
+
+      this.$route.replace({
+        name: 'search',
+        params: this.$route.params,
+      })
+    },
+    //添加品牌并更新数据
+    addTrademark(trademark) {
+      this.options.trademark = trademark
+      this.updataProductList()
+    },
+    //删除品牌数据
+    delTrademark() {
+      this.options.trademark = ''
+      this.updataProductList()
+    },
+    addProp(prop) {
+      this.options.props.push(prop)
+      this.updataProductList()
+    },
+    delProp(index) {
+      this.options.props.splice(index, 1)
+      this.updataProductList()
+    },
+    //设置排序方式
+    setOrder(order) {
+      let [orderNum, orderType] = this.options.order.split(':')
+      //相等点击就是第二次，会改变图标
+      //不相等点击就是第一次，不会改变图标
+      if (orderNum === order) {
+        //看order 如果order是1就改综合排序
+        //如果order是2就改价格排序
+        if (order === '1') {
+          this.isDone = !this.isDone
+        } else {
+          this.isPriceDown = !this.isPriceDown
+        }
+        orderType = orderType === 'desc' ? 'asc' : 'desc'
+      } else {
+        if (order === '2') {
+          this.isPriceDown = false
+          orderType = 'asc'
+        } else {
+          orderType = this.isDone ? 'desc' : 'asc'
+        }
+      }
+      this.options.order = `${order}:${orderType}`
+      this.updataProductList()
+    },
+    //当每页条数发生变化触发
+    handleSizeChange(pageSize) {
+      console.log('pageSize', pageSize)
+      this.options.pageSize = pageSize
+      this.updataProductList()
+    },
+    //当页码发生变化触发
+    handleCurrrentChange(pageNo) {
+      console.log('pageNo', pageNo)
+      /* this.options.pageNo = pageNo */
+      this.updataProductList(pageNo)
+    },
   },
   mounted() {
-    this.getTraversedata()
+    this.updataProductList()
   },
   components: {
     TypeNav,
@@ -247,11 +401,24 @@ export default {
               line-height: 18px;
 
               a {
-                display: block;
-                cursor: pointer;
+                display: flex;
+                justify-content: space-around;
                 padding: 11px 15px;
+                cursor: pointer;
                 color: #777;
                 text-decoration: none;
+                span {
+                  display: flex;
+                  flex-direction: column;
+                  line-height: 8px;
+                  i {
+                    padding-top: 1px;
+                    font-size: 12px;
+                    &.deactive {
+                      color: rgba(255, 255, 255, 0.5);
+                    }
+                  }
+                }
               }
 
               &.active {
