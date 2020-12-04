@@ -101,9 +101,11 @@
               <li class="yui3-u-1-5" v-for="list in goodsList" :key="list.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"
+                    <router-link
+                      :to="`/item/${list.id}`"
+                      target="_blank"
                       ><img :src="list.defaultImg"
-                    /></a>
+                    /></router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -137,7 +139,14 @@
               </li>
             </ul>
           </div>
-          <el-pagination
+          <Pagination
+            @current-change="handleCurrrentChange"
+            :current-page="options.pageNo"
+            :pager-count="7"
+            :page-size="5"
+            :total="total"
+          />
+          <!--  <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrrentChange"
             :current-page="options.pageNo"
@@ -147,7 +156,7 @@
             layout="prev, pager, next, jumper,total, sizes"
             :total="total"
           >
-          </el-pagination>
+          </el-pagination> -->
         </div>
       </div>
     </div>
@@ -155,6 +164,7 @@
 </template>
 
 <script>
+import Pagination from '../../compponents/Pagination'
 import TypeNav from '../../compponents/TypeNav'
 import SearchSelector from './SearchSelector/SearchSelector'
 import { mapGetters, mapActions } from 'vuex'
@@ -166,11 +176,11 @@ export default {
         category1Id: '',
         category2Id: '',
         category3Id: '',
-        categoryName: '',
-        keyword: '',
-        order: '1:desc',
-        pageNo: 1, //分页的页码
-        pageSize: 5, //分页每页的商品数量
+        categoryName: '', //分了名称
+        keyword: '', //搜索内容
+        order: '1:desc', //排序方式
+        pageNo: 1,
+        pageSize: 10,
         props: [],
         trademark: '',
       },
@@ -204,7 +214,7 @@ export default {
         category1Id,
         category2Id,
         category3Id,
-        pageNo
+        pageNo,
       }
       this.options = options
       this.getTraversedata(options)
@@ -295,6 +305,7 @@ export default {
   components: {
     TypeNav,
     SearchSelector,
+    Pagination,
   },
 }
 </script>

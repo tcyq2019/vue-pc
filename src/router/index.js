@@ -1,7 +1,7 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 
-
+import Detail from "../views/Detail"
 import Home from "../views/Home";
 import Login from "../views/Login";
 import Register from "../views/Register";
@@ -46,7 +46,15 @@ export default new VueRouter({
     {
       name: "search",
       path: "/Search/:SearchText?",
-      component: Search
+      component: Search,
+    }, {
+      name:"detail",
+      path: "/item/:id",
+      component: Detail
     }
   ],
-})
+  //每次切换路由页面滚动的位置
+  scrollBehavior () {
+    return { x: 0, y: 0 };
+  },
+});
