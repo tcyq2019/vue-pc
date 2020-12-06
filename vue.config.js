@@ -18,8 +18,11 @@ module.exports = {
     proxy: {
       "/api": {
         target: "http://182.92.128.115",
-        changeOrigin: true
-      }
-    }
-  }
+        changeOrigin: true, // 允许跨域
+        // pathRewrite: { // 重写路径
+        //   "^/api": "",
+        // },
+      },
+    },
+  },
 }

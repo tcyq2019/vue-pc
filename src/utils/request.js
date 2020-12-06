@@ -2,13 +2,34 @@ import axios from "axios";
 import { Message } from "element-ui"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css";
+import userTempId from "@utils/getuserTempId"
+
+/* 
+  userTempId 未登录用户的临id
+  通过uuid来生成
+  1.生成后要存储起来，
+  后端会通过这个id来保存购物车数据如果你有这个id就能得到这个数据
+  如果没有就得不到，存储起来将来反复使用
+  localstorage永久存储
+  sessionstorage回话存储（一旦关闭浏览器数据就会清空）
+
+  2，整体流程
+  先读取本地数据 看是否通过localstorage里面有uerstemp
+  如果有直接使用,
+  3,再内存中缓存一份locastorage数据让其性更好
+
+*/
+
+const TempId = userTempId();
 const instance = axios.create({
   baseURL: "/api",
-})
+});
 
 instance.interceptors.request.use(
   (config) => {
     NProgress.start();
+
+    config.headers.TempId = TempId;
     return config
   }
 );

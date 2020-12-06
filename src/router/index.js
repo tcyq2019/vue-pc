@@ -5,7 +5,9 @@ import Detail from "../views/Detail"
 import Home from "../views/Home";
 import Login from "../views/Login";
 import Register from "../views/Register";
-import Search from "../views/Search"
+import Search from "../views/Search";
+import AddCartSuccess from "../views/AddCartSuccess";
+import ShopCart from "../views/ShopCart"
 const push = VueRouter.prototype.push;
 const replace = VueRouter.prototype.replace;
 VueRouter.prototype.push = function (location, onComplete, onAbort) {
@@ -48,10 +50,20 @@ export default new VueRouter({
       path: "/Search/:SearchText?",
       component: Search,
     }, {
-      name:"detail",
+      name: "detail",
       path: "/item/:id",
       component: Detail
-    }
+    }, {
+      name: "shopcart",
+      path: "/shopcart",
+      component: ShopCart
+    },
+    {
+      // 命名路由
+      name: "addcartsuccess",
+      path: "/addcartsuccess",
+      component: AddCartSuccess,
+    },
   ],
   //每次切换路由页面滚动的位置
   scrollBehavior () {

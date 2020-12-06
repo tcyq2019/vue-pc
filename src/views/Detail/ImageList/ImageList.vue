@@ -1,12 +1,13 @@
 <template>
-  <div class="swiper-container">
+  <div class="swiper-container" ref="swiper">
     <div class="swiper-wrapper">
       <div
         class="swiper-slide"
-        v-for="Image in skuInfo.skuImageList"
+        v-for="(Image,index) in skuInfo.skuImageList"
         :key="Image.id"
       >
-        <img :src="Image.imgUrl" />
+      <!-- 这里updataCurrentImageIndex得到点击小图 获取小图的index下表，用来改变zoom里面的展示图片 -->
+        <img :src="Image.imgUrl" @click="updataCurrentImageIndex(index)" />
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -15,13 +16,28 @@
 </template>
 
 <script>
-/* import Swiper from 'swiper' */
-/* import 'swiper/swiper-bundle.min.css'
-import 'swiper/swiper-bundle.min.js' */
+import Swiper, { Navigation } from 'swiper'
+Swiper.use([Navigation])
 export default {
   name: 'ImageList',
   props: {
     skuInfo: Object,
+   updataCurrentImageIndex:Function
+  },
+  watch: {
+    skuInfo() {
+      this.$nextTick(() => {
+        new Swiper(this.$refs.swiper, {
+          slidesPerView: 5,
+          spaceBetween: 20,
+          slidesPerGroup: 5,
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        })
+      })
+    },
   },
 }
 </script>

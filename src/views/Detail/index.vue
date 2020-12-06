@@ -16,9 +16,24 @@
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom :skuInfo="skuInfo" />
+          <!-- 直接用&&来判断数据的获取情况，获取到了再传给大图 -->
+          <Zoom
+            :bigimgUrl="
+              skuInfo &&
+              skuInfo.skuImageList[currentImgIndex] &&
+              skuInfo.skuImageList[currentImgIndex].imgUrl
+            "
+            :imgUrl="
+              skuInfo &&
+              skuInfo.skuImageList[currentImgIndex] &&
+              skuInfo.skuImageList[currentImgIndex].imgUrl
+            "
+          />
           <!-- 小图列表 -->
-          <ImageList :skuInfo="skuInfo" />
+          <ImageList
+            :skuInfo="skuInfo"
+            :updataCurrentImageIndex="updataCurrentImageIndex"
+          />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -89,13 +104,18 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <el-input-number
+                  class="input-number"
+                  v-model="skuNum"
+                  controls-position="right"
+                  :min="1"
+                  :max="100"
+                ></el-input-number>
               </div>
-              <div class="add">
+              <div class="add" @click="addCart">
                 <a href="javascript:">加入购物车</a>
               </div>
+              
             </div>
           </div>
         </div>
@@ -339,11 +359,37 @@ import TypeNav from '../../compponents/TypeNav'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Detail',
+  data() {
+    return {
+      currentImgIndex: 0,
+      skuNum: 1,
+    }
+  },
   computed: {
     ...mapGetters(['categoryView', 'skuInfo', 'spuSaleAttrList']),
   },
   methods: {
-    ...mapActions(['GetDetail']),
+    ...mapActions(['GetDetail', 'updateCartCount']),
+    //这里获取传给小图区域用来跳转大图区域图片的下标
+    //用props在小图区域改变了图的下标传送回来 而后再传送给兄弟组件中图 大图  让其根下表变化变化x
+    updataCurrentImageIndex(index) {
+      this.currentImgIndex = index
+    },
+    //跳转加入购物车
+    async addCart() {
+      try {
+        // 发送请求，加入购物车
+        // actions函数必须返回一个promise对象，才会等待它执行
+        await this.updateCartCount({
+          skuId: this.skuInfo.id,
+          skuNum: this.skuNum,
+        });
+        // 一旦加入购物车，跳转到加入购物车成功页面
+        this.$router.push(`/addcartsuccess?skuNum=${this.skuNum}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
   mounted() {
     this.GetDetail(this.$route.params.id)
@@ -351,7 +397,7 @@ export default {
   components: {
     ImageList,
     Zoom,
-    TypeNav
+    TypeNav,
   },
 }
 </script>
@@ -524,6 +570,9 @@ export default {
               position: relative;
               float: left;
               margin-right: 15px;
+              .input-number {
+                width: 150px;
+              }
 
               .itxt {
                 width: 38px;
@@ -561,6 +610,7 @@ export default {
 
             .add {
               float: left;
+              margin-left: 100px;
 
               a {
                 background-color: #e1251b;

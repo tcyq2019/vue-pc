@@ -12,7 +12,7 @@
         </div>
         <div class="hearder-typeList">
           <a href="###">我的订单</a>
-          <a href="###">我的购物车</a>
+          <router-link to="/shopcart">我的购物车</router-link>
           <a href="###">我的京西</a>
           <a href="###">京西会员</a>
           <a href="###">企业采购</a>

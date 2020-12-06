@@ -16,7 +16,6 @@
 
 <script>
 import Swiper, { Navigation, Pagination, Autoplay } from 'swiper'
-import 'swiper/swiper-bundle.min.css'
 Swiper.use([Navigation, Pagination, Autoplay])
 export default {
   name: 'Carousel',
