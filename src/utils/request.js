@@ -2,8 +2,8 @@ import axios from "axios";
 import { Message } from "element-ui"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css";
-import userTempId from "@utils/getuserTempId"
-
+import getUserTempId from "@utils/getUserTempId"
+import store from "../store"
 /* 
   userTempId 未登录用户的临id
   通过uuid来生成
@@ -20,7 +20,7 @@ import userTempId from "@utils/getuserTempId"
 
 */
 
-const TempId = userTempId();
+const userTempId = getUserTempId();
 const instance = axios.create({
   baseURL: "/api",
 });
@@ -28,8 +28,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     NProgress.start();
-
-    config.headers.TempId = TempId;
+    const token = store.state.user.token;
+    if (token) {
+      config.headers.token = token
+    }
+    config.headers.userTempId = userTempId;
     return config
   }
 );

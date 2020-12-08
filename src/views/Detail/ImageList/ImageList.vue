@@ -5,6 +5,7 @@
         class="swiper-slide"
         v-for="(Image,index) in skuInfo.skuImageList"
         :key="Image.id"
+        
       >
       <!-- 这里updataCurrentImageIndex得到点击小图 获取小图的index下表，用来改变zoom里面的展示图片 -->
         <img :src="Image.imgUrl" @click="updataCurrentImageIndex(index)" />

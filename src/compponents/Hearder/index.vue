@@ -4,7 +4,12 @@
       <div class="hearder-Container">
         <div class="hearder-LoginList">
           <p>京西商城欢迎您</p>
-          <p>
+          <p v-if="$store.state.user.name">
+            <span>{{$store.state.user.name}}</span>
+            &nbsp;
+            <button>退出</button>
+          </p>
+          <p v-else>
             <span>请</span>
             <router-link to="/Login">登陆</router-link>
             <router-link to="/Register" class="register">免费注册</router-link>

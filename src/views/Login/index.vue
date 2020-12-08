@@ -14,14 +14,25 @@
           </ul>
 
           <div class="content">
-            <form action="##">
-              <div class="input-text clearFix">
-                <span></span>
-                <input type="text" placeholder="邮箱/用户名/手机号" />
-              </div>
+            <form @submit.prevent="submit">
+              <ValidationProvider rules="required" v-slot="{ errors }">
+                <div class="input-text clearFix">
+                  <span></span>
+                  <input
+                    type="text"
+                    placeholder="邮箱/用户名/手机号"
+                    v-model="user.phone"
+                  />
+                  <p :style="{ color: 'red' }">{{ errors[0] }}</p>
+                </div>
+              </ValidationProvider>
               <div class="input-text clearFix">
                 <span class="pwd"></span>
-                <input type="text" placeholder="请输入密码" />
+                <input
+                  type="password"
+                  placeholder="请输入密码"
+                  v-model="user.password"
+                />
               </div>
               <div class="setting clearFix">
                 <label class="checkbox inline">
@@ -30,17 +41,17 @@
                 </label>
                 <span class="forget">忘记密码？</span>
               </div>
-              <button class="btn" @click="loginbtn">登&nbsp;&nbsp;录</button>
+              <button class="btn">登&nbsp;&nbsp;录</button>
             </form>
 
             <div class="call clearFix">
-             <!--  <ul>
+              <!--  <ul>
                 <li><img src="./images/qq.png" alt="" /></li>
                 <li><img src="./images/sina.png" alt="" /></li>
                 <li><img src="./images/ali.png" alt="" /></li>
                 <li><img src="./images/weixin.png" alt="" /></li>
               </ul> -->
-              <router-link class="register" to="/register" @click="registerbtn"
+              <router-link class="register" to="/register"
                 >立即注册</router-link
               >
             </div>
@@ -67,22 +78,79 @@
 </template>
 
 <script>
-import { reqLogin } from '@api/user.js'
+import { mapState } from 'vuex'
+import { ValidationProvider, extend } from 'vee-validate'
+import { required } from 'vee-validate/dist/rules'
+extend('required', required)
 export default {
   name: 'login',
-  methods: {
-    loginbtn() {
-      reqLogin('137000000000', '111111')
-        .then((res) => {
-          console.log('res', res)
-        })
-        .catch((err) => {
-          console.log('err', err)
-        })
-    },
-    registerbtn(){
-      this.$router.push("/register")
+  data() {
+    return {
+      user: {
+        phone: '',
+        password: '',
+      },
+      isLogining: false,
+      //防止用户点击登陆时候，点击多次 发送多次请求，只需要一次就够所以isLogining表示正在登陆
+      // 也是个开关用来控制用户点击
+      isAutoLogin: true,
     }
+  },
+  computed: {
+    ...mapState({
+      //这里是提取token，用来给后面保存
+      token: (state) => state.user.token,
+      name: (state) => state.user.name,
+    }),
+  },
+  /* 
+  beforCreate（）{
+    console.log(this.tken)
+  }
+  Create（）{
+    console.log(this.tken)
+    这里可以获取到token 所以挂在到create去使用
+  }
+  */
+  created() {
+    /* 
+    自动登陆：
+    在login组件判断是否token
+    有就认为登陆过，跳转到页面
+    不够安全：token是可以伪造的
+    解决：拿到token发送请求
+    1，验证token的合法性（正确，没有过期
+    2，请求用户数据
+    ）
+    */
+   //这里判断了一旦有token就直接去首页 跳过登陆 也就是实现自动登陆效果
+    if (this.token) {
+      this.$router.replace('/')
+    }
+  },
+  methods: {
+    async submit() {
+      try {
+        //如果isLogining是true 表示已经登陆就 return
+        if (this.isLogining) return
+        //如果isLogining进来就把它修改诚true
+        this.isLogining = true
+        const { phone, password } = this.user
+        //这里login发送请求
+        await this.$store.dispatch('login', { phone, password })
+        if (this.isAutoLogin) {
+          //isAutoLogin是用来获取给localtotage存下token，用来设置默认登陆
+          localStorage.setItem('token', this.token)
+          localStorage.setItem('name', this.name)
+        }
+        this.$router.replace('/')
+      } catch {
+        this.isLogining = false
+      }
+    },
+  },
+  components: {
+    ValidationProvider,
   },
 }
 </script>
@@ -199,7 +267,7 @@ export default {
           .btn {
             background-color: #e1251b;
             padding: 6px;
-            border-radius: 0;
+            border-radius: 0px;
             font-size: 16px;
             font-family: 微软雅黑;
             word-spacing: 4px;

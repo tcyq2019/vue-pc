@@ -2,7 +2,7 @@ import {
   reqGetCartList,
   reqUpdateCartCount,
   reqUpdateCartCheck,
-  //reqDelCart
+  reqDelCart
 } from "@api/shopcart"
 export default {
   state: {
@@ -16,7 +16,6 @@ export default {
       commit("GET_CART_LIST", cartList);
     },
     async updateCartCount ({ commit }, { skuId, skuNum }) {
-      console.log(222)
       await reqUpdateCartCount(skuId, skuNum);
       // 1. 手动更新vuex的数据 --> 页面就会重新渲染
       // 2. 重新请求所有购物车数据
@@ -29,6 +28,11 @@ export default {
       console.log(commit)
 
     },
+    async delCart ({ commit }, skuId) {
+      await reqDelCart(skuId)
+      console.log(commit)
+     /*  commit("DELTE_CART", skuId) */
+    }
   },
   mutations: {
     GET_CART_LIST (state, cartList) {

@@ -8,6 +8,10 @@ import Register from "../views/Register";
 import Search from "../views/Search";
 import AddCartSuccess from "../views/AddCartSuccess";
 import ShopCart from "../views/ShopCart"
+import Pay from "../views/Pay"
+import PaySuccess from "../views/PaySuccess"
+import Center from "../views/Center"
+import Trade from "../views/Trade"
 const push = VueRouter.prototype.push;
 const replace = VueRouter.prototype.replace;
 VueRouter.prototype.push = function (location, onComplete, onAbort) {
@@ -63,6 +67,30 @@ export default new VueRouter({
       name: "addcartsuccess",
       path: "/addcartsuccess",
       component: AddCartSuccess,
+    },
+    {
+      // 命名路由
+      name: "pay",
+      path: "/pay",
+      component: Pay,
+    },
+    {
+      // 命名路由
+      name: "trade",
+      path: "/trade",
+      component: Trade,
+    },
+    {
+      // 命名路由
+      name: "paySuccess",
+      path: "/paysuccess",
+      component: PaySuccess,
+    },
+    {
+      // 命名路由
+      name: "center",
+      path: "/center/myorder",
+      component: Center,
     },
   ],
   //每次切换路由页面滚动的位置
