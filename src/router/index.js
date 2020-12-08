@@ -1,6 +1,6 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
-
+import store from "../store"
 import Detail from "../views/Detail"
 import Home from "../views/Home";
 import Login from "../views/Login";
@@ -29,7 +29,7 @@ VueRouter.prototype.replace = function (location, onComplete, onAbort) {
 
 Vue.use(VueRouter)
 
-export default new VueRouter({
+const router = new VueRouter({
   routes: [
     {
       path: "/",
@@ -98,3 +98,41 @@ export default new VueRouter({
     return { x: 0, y: 0 };
   },
 });
+/* 
+路由守卫
+  1是什么
+  在路由跳转之前，之中，之后触发的钩子函数（类似于生命周期）
+  2分类
+  全局守卫
+  全局前置守卫：在切换路由之前触发
+  beforeEach
+  全局解析守卫：之中
+  beforeResolve
+  全局后置守卫：之后
+  afterEach
+  路由组件
+  组件守卫
+*/
+//需要权限验证的地址
+const permissionPaths = ["/trade", "/pay", "/center"]
+router.beforeEach((to, from, next) => {
+  /* 
+  to  要去的路由对象
+   from 从哪来的路由对象（当前路由对象）（$route）
+   next 是一个函数:跳转到那个路由的方法
+      比如：要去to这个路由next（）
+          要去登陆路由 next("/login") next({path:"/login"})
+          next({name:"login"})
+
+    权限验证：
+        如果用户为登陆，不允许去 trade pay center等路由
+    }
+  */
+  //判断permissionPaths里面是不是包含了 要去的路径 并且判断当前情况有没有登陆
+  //没有登陆就不会有请求到的token ，没有的话 就直接跳转到login先登陆
+  if (permissionPaths.indexOf(to.path) > -1 && !store.state.user.token) {
+    return next("/login");
+  }
+  next();
+})
+export default router

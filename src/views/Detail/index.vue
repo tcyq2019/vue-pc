@@ -384,6 +384,8 @@ export default {
           skuId: this.skuInfo.id,
           skuNum: this.skuNum,
         });
+        //设置sessionStorage参数 后面在AddCartSuccess中路由守卫使用
+        sessionStorage.setItem("cart",JSON.stringify(this.skuInfo ))
         // 一旦加入购物车，跳转到加入购物车成功页面
         this.$router.push(`/addcartsuccess?skuNum=${this.skuNum}`);
       } catch (e) {

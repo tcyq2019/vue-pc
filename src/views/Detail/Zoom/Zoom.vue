@@ -1,20 +1,42 @@
 <template>
   <div class="spec-preview">
     <img :src="imgUrl" />
-    <div class="event"></div>
+    <div class="event" @mousemove="move"></div>
     <div class="big">
       <img :src="bigimgUrl" />
     </div>
-    <div class="mask"></div>
+    <div class="mask" :style="{ left: xleft + 'px', top: xtop + 'px' }"></div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Zoom',
+  data() {
+    return {
+      xleft: 0,
+      xtop: 0,
+      bleft: 0,
+      btop: 0,
+    }
+  },
   props: {
     bigimgUrl: String,
     imgUrl: String,
+  },
+  methods: {
+    move(e) {
+      // console.log(e)
+      this.xleft = e.offsetX - 100
+      this.xtop = e.offsetY - 100
+      console.log(this.xtop, this.xleft)
+      this.bleft = -2 * this.xleft
+      this.btop = -2 * this.btop
+      this.xleft = this.xleft < 0 ? (this.xleft = 0) : this.xleft
+      this.xleft = this.xleft > 200 ? (this.xleft = 200) : this.xleft
+      this.xtop = this.xtop < 0 ? (this.xtop = 0) : this.xtop
+      this.xtop = this.xtop > 200 ? (this.xtop = 200) : this.xtop
+    },
   },
 }
 </script>

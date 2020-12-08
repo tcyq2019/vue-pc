@@ -5,9 +5,9 @@
         <div class="hearder-LoginList">
           <p>京西商城欢迎您</p>
           <p v-if="$store.state.user.name">
-            <span>{{$store.state.user.name}}</span>
+            <span>{{ $store.state.user.name }}</span>
             &nbsp;
-            <button>退出</button>
+            <button @click="allOut">退出</button>
           </p>
           <p v-else>
             <span>请</span>
@@ -16,7 +16,7 @@
           </p>
         </div>
         <div class="hearder-typeList">
-          <a href="###">我的订单</a>
+          <router-link to="/trade">我的订单</router-link>
           <router-link to="/shopcart">我的购物车</router-link>
           <a href="###">我的京西</a>
           <a href="###">京西会员</a>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { reqGetOut } from '../../api/pay'
 export default {
   name: 'hearder',
   data() {
@@ -90,6 +91,13 @@ export default {
       } else {
         this.$router.push(location)
       }
+    },
+    async allOut() {
+      const result = await reqGetOut()
+      localStorage.removeItem('token')
+      localStorage.removeItem('name')
+      this.$store.state.user.name = result
+      this.$store.state.user.token = result
     },
   },
   mounted() {

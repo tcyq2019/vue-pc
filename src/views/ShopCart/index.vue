@@ -94,8 +94,8 @@
           <em>总价（不含运费） ：</em>
           <i class="summoney">{{ totalPrice }}</i>
         </div>
-        <div class="sumbtn" >
-          <router-link class="sum-btn" to="/trade" target="_blank">结算</router-link >
+        <div class="sumbtn" @click="gotrades" >
+          <a class="sum-btn" target="_blank">结算</a >
         </div>
       </div>
     </div>
@@ -167,6 +167,17 @@ export default {
       //的值，e.target 获取到你新输入的6 去1减去已经 加载过的5 就是需要再去更新的次数skuNum
       this.updateCartCount({ skuId, skuNum: e.target.value - skuNum })
     },
+   /*  gotrades(){
+     const name = localStorage.getItem("name")
+     if(name){
+       this.$router.push("/trade")
+     }else{
+       alert("请先登陆账号")
+     }
+    } */
+    gotrades(){
+      this.$router.push("/trade")
+    }
   },
   mounted() {
     this.getCartList()
