@@ -19,10 +19,11 @@ import store from "../store"
   3,再内存中缓存一份locastorage数据让其性更好
 
 */
-
+//这里判断他是开发还是生产环境 生产环境的url必须写全，前面代理会失效
+/* const prsfix_url = process.env.NODE_ENV === "development" ? "/" : "http://182.92.128.115/" */
 const userTempId = getUserTempId();
 const instance = axios.create({
-  baseURL: "/api",
+  baseURL: "http://182.92.128.115/api",
 });
 
 instance.interceptors.request.use(

@@ -94,14 +94,14 @@
 //二维码生成
 
 import QRCode from 'qrcode'
-import { reqGetQRCode, reqGetPayStatus } from '../../api/pay'
+import { reqGetQRCode/*  reqGetPayStatus */ } from '../../api/pay'
 export default {
   name: 'Pay',
   methods: {
     async submit() {
       //这里的请求是得到后台 提供的二维码接口 而后下载使用 qrcode 将它包装成二维码
       const result = await reqGetQRCode(this.$route.query.orderId)
-      await reqGetPayStatus(this.$route.query.orderId)
+     /*  await reqGetPayStatus(this.$route.query.orderId) */
       QRCode.toDataURL(result.codeUrl)
         .then((url) => {
           this.$alert(

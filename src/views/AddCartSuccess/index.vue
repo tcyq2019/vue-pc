@@ -5,13 +5,13 @@
       <div class="goods">
         <div class="left-good">
           <div class="left-pic">
-            <img src="good.skuDefaultImg" />
+            <img :src="skuInfo.skuDefaultImg" />
           </div>
           <div class="right-info">
             <p class="title">
-              小米红米 Redmi note8 手机 梦幻蓝 全网通(4GB+64GB)
+            {{skuInfo.skuName}}
             </p>
-            <p class="attr">颜色：WFZ5099IH/5L钛金釜内胆 数量：2</p>
+            <p class="attr"> {{skuInfo.skuDesc}}</p>
           </div>
         </div>
         <div class="right-gocart">
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import {  mapGetters } from 'vuex'
 export default {
   name: 'AddCartSuccess',
   data() {
@@ -41,11 +42,14 @@ export default {
       //console.log(to,from,next)
       console.log(vm)
       if (from.name === 'detail' && sessionStorage.getItem('cart')) {
-        return next();
+        return next()
       }
-      next('/shopcart');
+      next('/shopcart')
     })
   },
+  computed:{
+    ...mapGetters(["skuInfo"])
+  }
 }
 </script>
 

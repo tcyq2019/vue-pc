@@ -2,7 +2,7 @@
   <div class="swiper-container" ref="swiper">
     <div class="swiper-wrapper">
       <div class="swiper-slide" v-for=" carpuse in carpuseList" :key="carpuse.id">
-        <img :src="carpuse.imgUrl" />
+        <img v-lazy="carpuse.imgUrl" />
       </div>
     </div>
     <!-- 如果需要分页器 -->

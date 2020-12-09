@@ -133,12 +133,12 @@ export default {
         selectAddressId,
         trade: { userAddressList },
       } = this
-      return userAddressList
-        ? userAddressList.find((address) => address.id === selectAddressId)
-        : {}
       //这里的计算属性是为了 让上面点击选着了样式的id和下面的信心同步
       //将userAddressList  和 selectAddressId解构 判断数组userAddressList里面adress的id和selectAddressId解构同步
       //不同步返回空对象 同步就应用上
+      return userAddressList
+        ? userAddressList.find((address) => address.id === selectAddressId)
+        : {}
     },
   },
   methods: {
@@ -171,6 +171,7 @@ export default {
     ).id
     //这里是为了设置默认值  在页面挂载后修改selectAddressId的值，根据数据isDefault
   },
+  
 }
 </script>
 

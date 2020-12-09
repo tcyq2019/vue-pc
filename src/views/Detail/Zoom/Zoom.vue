@@ -3,7 +3,7 @@
     <img :src="imgUrl" />
     <div class="event" @mousemove="move"></div>
     <div class="big">
-      <img :src="bigimgUrl" />
+      <img :style="{ left: bleft + 'px', top: xtop + 'px' }" :src="bigimgUrl" />
     </div>
     <div class="mask" :style="{ left: xleft + 'px', top: xtop + 'px' }"></div>
   </div>
